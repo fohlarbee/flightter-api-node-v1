@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum verificationType {
+  GOOGLE
+  FACEBOOK
+  FLIGHTTER
+}
+
+
+enum ReactionType {
+  LIKE
+  HATE
+}
+
+model User {
+  id                     Int                 @id @default(autoincrement())
+  email                  String              @unique
+  userName               String              @unique
+  firstName              String?
+  lastName               String?
+  avatar                 String?            
+  isVerified             Boolean             @default(false)
+  verificationType       verificationType    
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+
+
+
+//relationships
+ followers     Follow[]       @relation("UserFollowers")
+ following     Follow[]       @relation("UserFollowing")
+ reels         Reel[]         @relation("UserReels")
+ bookmarks    Bookmark[]      @relation("UserBookmarks")
+ reactions     Reaction[]
+ comments     Comment[]
+ userReplies  Reply[]
+}
+
+
+
+model Follow {
+  id            Int            @id @default(autoincrement())
+  followerId    Int
+  followingId   Int
+  createdAt     DateTime       @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([followerId, followingId])
+
+
+
+//relationships
+  follower      User           @relation("UserFollowers", fields: [followerId], references: [id])
+  following     User           @relation("UserFollowing", fields: [followingId], references: [id])
+}
+
+
+model Reel {
+  id            Int                @id @default(autoincrement())
+  userId        Int
+  title         String
+  caption       String
+  videoUrl      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime        @updatedAt
+
+
+
+//relationships
+  user            User          @relation("UserReels", fields: [userId], references: [id])
+  reaction       Reaction[]     
+  comment       Comment[]
+}
+
+
+model Bookmark {
+  id               Int          @id @default(autoincrement())
+  userId           Int
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+
+
+//relationships
+  user            User              @relation("UserBookmarks", fields: [userId], references: [id])
+  
+}
+
+model  Reaction {
+   id            Int            @id @default(autoincrement())
+  userId        Int
+  reelId        Int
+  reaction      ReactionType   @default(LIKE)
+  createdAt     DateTime       @default(now())
+  updatedAt      DateTime        @updatedAt
+
+
+
+
+//relationships
+  user          User           @relation(fields: [userId], references: [id])
+  reel          Reel           @relation(fields: [reelId], references: [id])
+  comment      Comment[]
+
+
+}
+
+model Comment {
+  id            Int            @id @default(autoincrement())
+  content       String
+  userId        Int
+  reelId        Int
+  media         String?        
+  reactionId     Int
+  replyId        Int
+   createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+
+  //relationships
+    user          User           @relation(fields: [userId], references: [id])
+   reel          Reel           @relation(fields: [reelId], references: [id])
+   reaction      Reaction        @relation(fields: [reactionId], references: [id])
+   replies        Reply[]         
+
+
+}
+
+model Reply  {
+  id          Int               @id @default(autoincrement())
+  content     String
+  userId      Int
+  commentId   Int
+  createdAt   DateTime           @default(now()) 
+  updatedAt   DateTime           @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+  comment     Comment  @relation(fields: [commentId], references: [id])
+
+}
