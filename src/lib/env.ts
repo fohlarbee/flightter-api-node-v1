@@ -8,4 +8,9 @@ dotenv.config();
 
 export const env = cleanEnv(process.env, {
     PORT: str(),
+    AUTH_EMAIL: str(),
+    AUTH_PASSWORD: str(),
+    DATABASE_URL: str(),
+    SECRET_KEY: str(),
+    TOKEN_EXPIRY:str(),
 })

@@ -1,9 +1,10 @@
+import { env } from '#/lib/env';
 import * as nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
     priority:'high',
     service:'gmail',   
-    from:'sammyola246@gmail.com',
+    from:'flightter.com@gmail.com',
     host:"smtp.gmail.com",
     port:465,
     secure: true,
@@ -32,6 +33,8 @@ const sendEmail = async(mailOptions: any) => {
     } catch (error) {
         if(error instanceof Error)
             return ({success:false, mssg:error.message});
+            console.log(error)
+
         
     }
 }

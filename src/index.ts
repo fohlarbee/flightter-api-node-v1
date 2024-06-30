@@ -6,6 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { corsOptions } from "./lib/corsOptions";
 import { limiter } from "./lib/rateLimiter";
+import  authRouter  from "./routers/auth";
 const http = require('node:http');
 const express = require('express')
 
@@ -15,9 +16,14 @@ dotenv.config();
 const app = express()
 
 app.use(express.json());
-app.use(cors(corsOptions))
 app.use(helmet());
 app.use(limiter)
+
+
+//endpoints
+app.use('/api/v1/auth', authRouter);
+// app.use(cors(corsOptions))
+
 
 
 

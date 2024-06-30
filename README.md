@@ -48,10 +48,10 @@ $ npm run test:cov
 
 - Author and Developer - [Olanrewaju Fohlarbee](https://my-portfolio-fohlarbee.vercel.app/)
 
-##  Socails
-- LinkedIn - [https://nestjs.com](https://www.linkedin.com/in/fohlar-bee-037212255/)
-- Twitter - [@nestframework](https://x.com/fohlarbee)
-- Instagram - [@nestframework](https://www.instagram.com/fohlarbee/)
+##  Socials
+- LinkedIn - [fohlarbee](https://www.linkedin.com/in/fohlar-bee-037212255/)
+- Twitter - [fohlarbee](https://x.com/fohlarbee)
+- Instagram - [fohlarbee](https://www.instagram.com/fohlarbee/)
 
 
 

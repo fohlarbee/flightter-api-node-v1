@@ -32,6 +32,7 @@ model User {
   userName               String              @unique
   firstName              String?
   lastName               String?
+  password               String
   avatar                 String?            
   isVerified             Boolean             @default(false)
   verificationType       verificationType    
@@ -151,5 +152,18 @@ model Reply  {
 
   user        User     @relation(fields: [userId], references: [id])
   comment     Comment  @relation(fields: [commentId], references: [id])
+
+}
+
+model Otp {
+  id               Int      @id @default(autoincrement())
+  email            String   
+  otp              String
+  isVerified        Boolean
+  for               String
+  expiresAt         DateTime    
+  createdAt   DateTime           @default(now()) 
+  updatedAt   DateTime           @updatedAt
+
 
 }
