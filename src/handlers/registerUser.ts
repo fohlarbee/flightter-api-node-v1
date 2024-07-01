@@ -5,12 +5,13 @@ import { RequestHandler } from "express";
 const registerUser: RequestHandler = async(req,res):Promise<any> => {
     try {
         const {email, userName, password, auth_provider} = req.body;
+        console.log(userName)
 
-        if(!userName || !password || !email) {
+        if(!userName  || !email) {
             return res.status(403).json({status: false, message: "invalid  params"})
         }
 
-        const newUser = await register(email,password,userName,auth_provider);
+        const newUser = await register(email,userName, auth_provider, password);
 
         return res.status(201).json({status: true, message: "User registered successfully", user: newUser})
 
