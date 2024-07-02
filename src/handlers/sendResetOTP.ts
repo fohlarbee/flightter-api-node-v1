@@ -4,7 +4,7 @@ import { sendOTP } from "./OTP-handler";
 
 
 
-export const getToken: RequestHandler = async(req, res, next) => {
+export const sendResetMail: RequestHandler = async(req, res, next) => {
     try {
         const { email } = req.body;
         if (!email) {
@@ -12,15 +12,15 @@ export const getToken: RequestHandler = async(req, res, next) => {
         }
         const userExits = await prisma.user.findUnique({where:{email} });
 
-        if (userExits) {
-            return res.status(400).json({ success: false, message: 'User already exits' })
+        if (!userExits) {
+            return res.status(400).json({ success: false, message: 'No user Records' })
         }
 
         const OTPDetails = {
             email,
             subject: 'Email Verification',
-            purpose: 'Enter the Code below to Proceed to Account creation',
-            for:'signup',
+            purpose: 'Enter the Code below to Proceed to Password Reset',
+            for:'ressetPawword',
             duration: 1
 
         }
