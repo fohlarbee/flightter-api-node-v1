@@ -10,7 +10,8 @@ enum verificationTypeEnum {
   }
 
 const register = async(email:string, password:string, userName: string, authProvider:string) => {
-     
+    console.log('the function')
+
     const haveEmailRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} });
 
     const emailRecord = haveEmailRecords[0]
@@ -21,23 +22,21 @@ const register = async(email:string, password:string, userName: string, authProv
 
 
     
-    const userExists = await prisma.user.findUnique({where:{email} })
+    const userExists = await prisma.user.findUnique({where:{email, userName} });
 
     if (userExists) 
-        throw new Error('Email already registered');
+        throw new Error('This user already exists');     
+        
+        const passwordCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/
 
-    const passwordCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/
        if( !passwordCheck.test(password))
             throw new Error('Password must contain at least 8 characters, including uppercase letters, lowercase letters, numbers, and special characters.');
 
 
 
-        const salt = await genSalt();
         const hashedPassword = await hashData(password, 10);
-
         
         const verificationType = verificationTypeEnum[authProvider as keyof typeof verificationTypeEnum];
-        console.log(verificationType)
 
 
 
@@ -56,7 +55,6 @@ const register = async(email:string, password:string, userName: string, authProv
 
         return user;
 
-}
-
+    }
 
 export default register

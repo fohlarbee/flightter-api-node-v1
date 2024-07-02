@@ -14,8 +14,6 @@ export const verifyReqOTP: RequestHandler = async(req,res) => {
         const isVerified = await verifyOTP(email, otp);
         if(isVerified === true) {
            return res.status(200).json({success:true, mssg: 'OTP Verified'})
-
-
         }
 
 

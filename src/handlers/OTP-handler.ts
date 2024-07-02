@@ -10,11 +10,11 @@ type OTPREQ = {
     email: string,
     purpose: string,
     duration: number
+    // for: string
 }
 
-export const sendOTP = async ({ subject, email, purpose, duration = 1 }: OTPREQ):Promise<Prisma.OtpCreateInput | undefined> => {
+export const sendOTP = async ({  subject, email, purpose, duration = 1 }: OTPREQ   ):Promise<Prisma.OtpCreateInput | undefined> => {
 
-    try {
         if (!subject || !email || !purpose) {
             throw Error('All fields must be provided')
         }
@@ -26,9 +26,7 @@ export const sendOTP = async ({ subject, email, purpose, duration = 1 }: OTPREQ)
 
         // clear old OTP records
         const  otpRecords = await prisma.otp.findMany({where:{email, createdAt:{gt:cutoffDate}}});
-        // if(otpRecords){
-          // await prisma.otp.delete({ where: { email , createdAt:{gt:cutoffDate}} });
-        // }
+     
 
          // Check if user has already received 5 OTPs within n hours
          
@@ -97,14 +95,5 @@ export const sendOTP = async ({ subject, email, purpose, duration = 1 }: OTPREQ)
         await prisma.otp.create({ data: newOTPRecord });
     
         return newOTPRecord
-
-
-
-    } catch (error) {
-        if (error instanceof Error)
-            throw error;
-            // return ({ success: false, mssg: 'Unable to send OTP' })
-
-    }
 
 }

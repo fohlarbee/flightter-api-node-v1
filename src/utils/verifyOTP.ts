@@ -1,11 +1,14 @@
 import { prisma } from "#/lib/prismaConnect";
 import { error } from "console";
 import compareHashData from "./compareHashData";
+import CustomError from "#/lib/customError";
 
  const verifyOTP = async(email:string, otp:string) => {
 
+  const user = await prisma.user.findUnique({where: {email}});
+  if(!user) throw new CustomError('User not found', false)
 
-    // try {
+
       const cutoffDate = new Date(Date.now() - 1 * 3600000); // n hours ago
 
         const matchedOTPRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} })
@@ -45,14 +48,7 @@ import compareHashData from "./compareHashData";
     
           return true;
 
-    // } catch (error) {
-    //     if(error instanceof Error){
-    //         console.log(error)
-            
-    //     }
-        
-    // }
-
+   
    
 }
 
