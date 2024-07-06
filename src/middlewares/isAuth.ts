@@ -46,7 +46,6 @@ export const IsAuth: RequestHandler = async (req, res, next) => {
             return res.status(403).json({ success: false, mssg: "Unauthorized access" })
         }
         req.user = user
-        // console.log({success:true, mssg: user?._id}
 
     } catch (error) {
         if (error instanceof JsonWebTokenError) {
