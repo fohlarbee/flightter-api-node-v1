@@ -9,7 +9,10 @@ enum verificationTypeEnum {
     FLIGHTTER = "FLIGHTTER",
   }
 
-const register = async(email:string, password:string, userName: string, authProvider:string) => {
+const register = async(email:string, 
+    password:string, 
+    userName: string, 
+    authProvider:string) => {
     console.log('the function')
 
     const haveEmailRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} });
