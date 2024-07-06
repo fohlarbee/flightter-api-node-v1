@@ -7,8 +7,11 @@ import helmet from "helmet";
 import { corsOptions } from "./lib/corsOptions";
 import { limiter } from "./lib/rateLimiter";
 import  authRouter  from "./routers/auth";
-const http = require('node:http');
-const express = require('express')
+import { userRouter } from "./routers/user";
+// const http = require('node:http');
+import express from 'express'
+import * as cron from 'node-cron';
+import axios from "axios";
 
 dotenv.config();
 
@@ -22,18 +25,23 @@ app.use(limiter)
 
 //endpoints
 app.use('/api/v1/auth', authRouter);
-// app.use(cors(corsOptions))
+app.use('/api/v1/user', userRouter)
+app.use(cors(corsOptions))
 
 
 
 
-
+cron.schedule("*/10 * * * *", async() => {
+  
+      await axios.get('https://https://flightter-api-node-v1.onrender.com/ping').then((response) => console.log(`server pinged ${response}`)).catch((error) => console.log(error))
+  
+})
 
 
 
 app.get('/', (req:Request, res:Response) => {
   res.send('Flightter server is running')
-})
+});
 
 async function init(){
    await prismaConnect();
