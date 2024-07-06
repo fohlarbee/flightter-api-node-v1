@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 export async function prismaConnect(){
 
- await new PrismaClient({omit:{user:{password:true}}}).$connect().then(() => {
+ await new PrismaClient().$connect().then(() => {
     console.log('connected to prisma')
   
   }).catch((err) => {
