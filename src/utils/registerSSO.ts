@@ -1,6 +1,7 @@
 import { prisma } from "#/lib/prismaConnect"
 import { genSalt } from "bcryptjs";
 import hashData from "./hashData";
+import { register } from "module";
 
 
 enum verificationTypeEnum {
@@ -8,7 +9,14 @@ enum verificationTypeEnum {
     FACEBOOK= "FACEBOOK",
   }
 
-const registerSSO = async(email:string, userName: string, authProvider:string) => {
+  interface signinUpInterface {
+    email: string,
+    userName: string,
+    dob: Date,
+    authProvider: string,
+}
+
+const registerSSO = async({email, userName, authProvider, dob}:signinUpInterface) => {
 
     
     const userExists = await prisma.user.findUnique({where:{email} });
@@ -22,6 +30,7 @@ const registerSSO = async(email:string, userName: string, authProvider:string) =
         let userDocs = ({
             email,
             userName,
+            dob,
             verificationType,
             isVerified:true
 
