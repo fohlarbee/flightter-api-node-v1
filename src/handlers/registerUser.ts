@@ -11,11 +11,9 @@ const registerUser: RequestHandler = async(req,res):Promise<any> => {
         if(!userName  || !email) {
             return res.status(403).json({status: false, message: "invalid  params"})
         }
-    
-    
         if(password){
     
-            const newUser = await register(email,password,userName,auth_provider);
+            const newUser = await register(req.body);
     
             return res.status(201).json({status: true, message: "User registered successfully", user: newUser}) 
             

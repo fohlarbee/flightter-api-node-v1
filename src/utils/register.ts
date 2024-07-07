@@ -8,12 +8,14 @@ enum verificationTypeEnum {
     FACEBOOK= "FACEBOOK",
     FLIGHTTER = "FLIGHTTER",
   }
-
-const register = async(email:string, 
-    password:string, 
-    userName: string, 
-    authProvider:string) => {
-    console.log('the function')
+interface register {
+    email: string,
+    userName: string,
+    password: string,
+    authProvider: string,
+    dob: Date,
+}
+const register = async({email, userName, password, authProvider, dob}: register) => {
 
     const haveEmailRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} });
 
@@ -48,6 +50,7 @@ const register = async(email:string,
             userName,
             password:hashedPassword,
             verificationType,
+            dob,
             isVerified:true
 
         });

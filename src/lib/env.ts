@@ -13,4 +13,5 @@ export const env = cleanEnv(process.env, {
     DATABASE_URL: str(),
     SECRET_KEY: str(),
     TOKEN_EXPIRY:str(),
+    REDIS_URL:str(),
 })
