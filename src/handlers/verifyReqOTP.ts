@@ -4,7 +4,6 @@ import { RequestHandler } from "express";
 export const verifyReqOTP: RequestHandler = async(req,res) => {
     try {
         const { email, otp } = req.body;
-        console.log(email, otp)
 
         if (!email || !otp) {
             return res.status(401).json({ success: false, mssg: 'All fields must be filled' })

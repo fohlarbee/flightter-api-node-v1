@@ -17,6 +17,12 @@ interface register {
 }
 const register = async({email, userName, password, authProvider, dob}: register) => {
 
+    const userExists = await prisma.user.findUnique({where:{email, userName} });
+
+    if (userExists) 
+        throw new Error('This user already exists');     
+        
+
     const haveEmailRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} });
 
     const emailRecord = haveEmailRecords[0]
@@ -27,11 +33,7 @@ const register = async({email, userName, password, authProvider, dob}: register)
 
 
     
-    const userExists = await prisma.user.findUnique({where:{email, userName} });
-
-    if (userExists) 
-        throw new Error('This user already exists');     
-        
+  
         const passwordCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$/
 
        if( !passwordCheck.test(password))

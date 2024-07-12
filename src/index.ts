@@ -13,6 +13,8 @@ import express from 'express'
 import * as cron from 'node-cron';
 import axios from "axios";
 import '../src/db/redis'
+import { reelRouter } from "./routers/reels-router";
+import { reelReader } from "./middlewares/multer";
 
 dotenv.config();
 
@@ -26,7 +28,8 @@ app.use(limiter)
 
 //endpoints
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/user', userRouter)
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/reel', reelRouter)
 app.use(cors(corsOptions))
 
 
@@ -34,7 +37,11 @@ app.use(cors(corsOptions))
 
 cron.schedule("*/10 * * * *", async() => {
   
-      await axios.get('https://https://flightter-api-node-v1.onrender.com/ping').then((response) => console.log(`server pinged ${response}`)).catch((error) => console.log(error))
+      await axios.get('https://flightter-api-node-v1.onrender.com/ping').then((response) => console.log(`server pinged ${response}`)).catch((error) => {
+        if(error instanceof Error){
+          console.log(error.message)
+        }
+      })
   
 })
 
@@ -47,11 +54,9 @@ app.get('/', (req:Request, res:Response) => {
 async function init(){
    await prismaConnect();
     const server = app.listen(process.env.PORT || env.PORT , () => {
-        console.log(`Server now live`)
       })
       process.on('SIGINT', () => {
         server.close(() => {
-          console.log('Server closed');
         });
       });
     
