@@ -9,12 +9,12 @@ const loginUser: RequestHandler = async(req, res) => {
     try {
         if(password && email){
 
-            const {token, user} = await login(email, password);
+            const {user, token} = await login(email, password);
 
             return res.status(200).json({status: true, message: "User logged in successfully", data: {user, token} })
 
         }else if(!password && email){
-            const {token, user} = await loginSSO(email);
+            const {user, token} = await loginSSO(email);
             return res.status(200).json({status: true, message: "User logged in successfully", data: {user, token} })
         }
 

@@ -1,3 +1,4 @@
+import { getValue, setValue } from "#/db/redis";
 import CustomError from "#/lib/customError";
 import { env } from "#/lib/env";
 import { prisma } from "#/lib/prismaConnect";
@@ -26,11 +27,23 @@ export const login = async (email:string, password: string ) => {
             if (!isMatched)
                 throw new CustomError( "Password Mismatch", false );
 
-            const token = jwt.sign({ id: user?.id.toString() }, env.SECRET_KEY, {
-                expiresIn: env.TOKEN_EXPIRY,
-                issuer: 'flightter',
-            })
-            return {user, token}
+
+           const token = await getValue(user.id.toString() + '_token');
+
+            if(token) {
+
+                return {user, token};
+            }else{
+
+                const token = jwt.sign({ id: user?.id.toString() }, env.SECRET_KEY, {
+                    expiresIn: env.TOKEN_EXPIRY,
+                    issuer: 'flightter',
+                })
+                await setValue(user.id.toString() + '_token', token);
+                return {user, token}
+
+            }
+
 
         }     
 

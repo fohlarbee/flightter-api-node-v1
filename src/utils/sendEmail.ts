@@ -33,7 +33,6 @@ const sendEmail = async(mailOptions: any) => {
     } catch (error) {
         if(error instanceof Error)
             return ({success:false, mssg:error.message});
-            console.log(error)
 
         
     }

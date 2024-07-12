@@ -43,7 +43,6 @@ export const sendOTP = async ({  subject, email, purpose, duration = 1 }: OTPREQ
 
         // generate OTP
         const generatedOTP = await generateOTP();
-        console.log(generatedOTP)
 
         //mail options  
 
@@ -74,7 +73,6 @@ export const sendOTP = async ({  subject, email, purpose, duration = 1 }: OTPREQ
         //send OTP to user//
         await sendEmail(mailOptions);
 
-        // console.log(generatedOTP)
 
         //Hash OTP
         const hashedOTP = await hashData(generatedOTP!);
