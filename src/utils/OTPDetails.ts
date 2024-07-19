@@ -6,9 +6,8 @@
 
 // }
 interface OTPDetailsForSignup {
-    email: string;
-    subject: string;
-    purpose: string;
-    duration: number;
-  }
-  
+  email: string;
+  subject: string;
+  purpose: string;
+  duration: number;
+}
