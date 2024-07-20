@@ -1,44 +1,40 @@
-import { prisma } from "#/lib/prismaConnect"
-import { genSalt } from "bcryptjs";
-import hashData from "./hashData";
-import { register } from "module";
-
+import { prisma } from "#/lib/prismaConnect";
 
 enum verificationTypeEnum {
-    GOOGLE = "GOOGLE",
-    FACEBOOK= "FACEBOOK",
-  }
-
-  interface signinUpInterface {
-    email: string,
-    userName: string,
-    dob: Date,
-    authProvider: string,
+  GOOGLE = "GOOGLE",
+  FACEBOOK = "FACEBOOK",
 }
 
-const registerSSO = async({email, userName, authProvider, dob}:signinUpInterface) => {
+interface signinUpInterface {
+  email: string;
+  userName: string;
+  dob: Date;
+  authProvider: string;
+}
 
-    
-    const userExists = await prisma.user.findUnique({where:{email} });
+const registerSSO = async ({
+  email,
+  userName,
+  authProvider,
+  dob,
+}: signinUpInterface) => {
+  const userExists = await prisma.user.findUnique({ where: { email } });
 
-    if (userExists) 
-        throw new Error('Email already registered');  
+  if (userExists) throw new Error("Email already registered");
 
-   
-        const verificationType = verificationTypeEnum[authProvider as keyof typeof verificationTypeEnum];
+  const verificationType =
+    verificationTypeEnum[authProvider as keyof typeof verificationTypeEnum];
 
-        let userDocs = ({
-            email,
-            userName,
-            dob,
-            verificationType,
-            isVerified:true
+  const userDocs = {
+    email,
+    userName,
+    dob,
+    verificationType,
+    isVerified: true,
+  };
+  const user = await prisma.user.create({ data: userDocs });
 
-        });
-        const user = await prisma.user.create({data:userDocs});
+  return user;
+};
 
-        return user;
-
-    }
-
-export default registerSSO
+export default registerSSO;

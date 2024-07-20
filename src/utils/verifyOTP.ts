@@ -1,49 +1,47 @@
 import { prisma } from "#/lib/prismaConnect";
-import { error } from "console";
 import compareHashData from "./compareHashData";
-import CustomError from "#/lib/customError";
 
- const verifyOTP = async(email:string, otp:string) => {
-
+const verifyOTP = async (email: string, otp: string) => {
   // const user = await prisma.user.findUnique({where: {email}});
   // if(!user) throw new CustomError('User not found', false)
 
+  // const cutoffDate = new Date(Date.now() - 1 * 3600000); // n hours ago
 
-      const cutoffDate = new Date(Date.now() - 1 * 3600000); // n hours ago
+  const matchedOTPRecords = await prisma.otp.findMany({
+    where: { email },
+    orderBy: { createdAt: "desc" },
+  });
 
-        const matchedOTPRecords = await prisma.otp.findMany({where:{email}, orderBy:{createdAt:'desc'} })
-    
-        if (!matchedOTPRecords) {
-            throw new Error('No OTP record found')
-        }
-    
-        //check if code is expired
+  if (!matchedOTPRecords) {
+    throw new Error("No OTP record found");
+  }
 
-        const recentOtpRecord = matchedOTPRecords[0]
+  //check if code is expired
 
-        const { expiresAt } = recentOtpRecord;
-    
-    
-        if (new Date(expiresAt).getTime().toString() <= Date.now().toString()) {
-            await prisma.otp.deleteMany({where:{email}  })
-            throw new Error('OTP expired')
-        }
-    
-          // verify code, if not expired
+  const recentOtpRecord = matchedOTPRecords[0];
 
-          const hashedOTP = recentOtpRecord.otp;
-          const validOTP = await compareHashData(otp, hashedOTP);
-    
-          if (!validOTP) {
-            throw new Error('Invalid OTP signature')
-          }
-    
-          await prisma.otp.updateMany({
-            where: {email},
-          data:{isVerified:true}
-          });
-    
-          return true;
-}
+  const { expiresAt } = recentOtpRecord;
+
+  if (new Date(expiresAt).getTime().toString() <= Date.now().toString()) {
+    await prisma.otp.deleteMany({ where: { email } });
+    throw new Error("OTP expired");
+  }
+
+  // verify code, if not expired
+
+  const hashedOTP = recentOtpRecord.otp;
+  const validOTP = await compareHashData(otp, hashedOTP);
+
+  if (!validOTP) {
+    throw new Error("Invalid OTP signature");
+  }
+
+  await prisma.otp.updateMany({
+    where: { email },
+    data: { isVerified: true },
+  });
+
+  return true;
+};
 
 export default verifyOTP;
