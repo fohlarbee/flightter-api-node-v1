@@ -12,7 +12,7 @@ import { userRouter } from "./routers/user";
 import express from "express";
 import * as cron from "node-cron";
 import axios from "axios";
-import "../src/db/redis";
+// import "../src/db/redis";
 import { reelRouter } from "./routers/reels-router";
 
 dotenv.config();
